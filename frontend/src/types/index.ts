@@ -165,3 +165,39 @@ export interface Profile {
   created_at: string;
   stats: ProfileStats;
 }
+// Achievements
+export type AchievementRarity = "common" | "rare" | "epic" | "legendary";
+export type AchievementCategory =
+  | "library"
+  | "ratings"
+  | "reviews"
+  | "favorites"
+  | "special";
+
+export interface UserAchievement {
+  id: number;
+  code: string;
+  title: string;
+  description: string;
+  icon: string;
+  rarity: AchievementRarity;
+  category: AchievementCategory;
+  target: number;
+  progress: number;
+  is_unlocked: boolean;
+  unlocked_at: string | null;
+}
+
+export const RARITY_LABELS: Record<AchievementRarity, string> = {
+  common: "Обычное",
+  rare: "Редкое",
+  epic: "Эпическое",
+  legendary: "Легендарное",
+};
+
+export const RARITY_COLORS: Record<AchievementRarity, string> = {
+  common: "text-gray-300 border-gray-500/30 bg-gray-500/10",
+  rare: "text-blue-400 border-blue-500/30 bg-blue-500/10",
+  epic: "text-purple-400 border-purple-500/30 bg-purple-500/10",
+  legendary: "text-yellow-400 border-yellow-500/30 bg-yellow-500/10",
+};
