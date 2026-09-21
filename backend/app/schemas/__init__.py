@@ -1,4 +1,5 @@
 from app.schemas.anime import AnimeListItem, AnimeRead, PaginatedAnime
+from app.schemas.favorite import FavoriteRead, FavoriteStatus
 from app.schemas.genre import GenreRead
 from app.schemas.user import (
     Token,
@@ -11,6 +12,8 @@ from app.schemas.user import (
 __all__ = [
     "AnimeListItem",
     "AnimeRead",
+    "FavoriteRead",
+    "FavoriteStatus",
     "GenreRead",
     "PaginatedAnime",
     "Token",
