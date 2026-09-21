@@ -7,8 +7,10 @@
 }
 
 body {
-  @apply bg-bg text-white antialiased;
-  font-family: system-ui, -apple-system, sans-serif;
+  @apply text-white antialiased;
+  font-family: "Inter", system-ui, sans-serif;
+  background-color: #0a0a0f;
+  min-height: 100vh;
 }
 
 @layer components {
@@ -27,4 +29,140 @@ body {
   .card {
     @apply bg-surface border border-border rounded-xl overflow-hidden;
   }
+}
+
+/* Анимации для hero-фона */
+@keyframes slowZoom {
+  0%, 100% {
+    transform: scale(1.25) translate(0, 0);
+  }
+  50% {
+    transform: scale(1.4) translate(0, 0);
+  }
+}
+
+@keyframes moonPulse {
+  0%, 100% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+
+@keyframes fogDrift {
+  0%, 100% {
+    transform: translateX(0) translateY(0);
+  }
+  50% {
+    transform: translateX(80px) translateY(-30px);
+  }
+}
+
+@keyframes flicker {
+  0%, 100% { opacity: 0.6; }
+  20% { opacity: 1; }
+  40% { opacity: 0.4; }
+  60% { opacity: 0.9; }
+  80% { opacity: 0.5; }
+}
+
+/* ========== GLASSMORPHISM UTILITIES ========== */
+.glass {
+  background: rgba(21, 21, 31, 0.5);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-strong {
+  background: rgba(21, 21, 31, 0.7);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-button {
+  background: rgba(139, 92, 246, 0.15);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+/* ========== SMOOTH TRANSITIONS ========== */
+.transition-smooth {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ========== GLOW EFFECTS ========== */
+.glow-primary {
+  box-shadow: 0 0 30px rgba(139, 92, 246, 0.3),
+              0 0 60px rgba(139, 92, 246, 0.15);
+}
+
+.glow-primary-strong {
+  box-shadow: 0 0 40px rgba(139, 92, 246, 0.5),
+              0 0 80px rgba(139, 92, 246, 0.25);
+}
+
+/* ========== SCROLLBAR ========== */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #0a0a0f;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.3);
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.5);
+}
+/* ANIHUB — переливающийся градиент при hover */
+.title-hover-gradient {
+  background: linear-gradient(
+    90deg,
+    #ffffff 0%,
+    #ffffff 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transition: background 0.4s ease;
+}
+
+.title-hover-gradient {
+  display: inline-block;
+  color: #ffffff;
+  transition: color 0.4s ease;
+  cursor: default;
+  user-select: none;
+  position: relative;
+}
+
+.title-hover-gradient:hover {
+  color: transparent;
+  background-image: linear-gradient(
+    90deg,
+    #8b5cf6 0%,
+    #ec4899 25%,
+    #06b6d4 50%,
+    #8b5cf6 75%,
+    #ec4899 100%
+  );
+  background-size: 300% 100%;
+  background-position: 0% 50%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientShift 3s linear infinite;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 300% 50%; }
 }

@@ -4,7 +4,7 @@ animehub/
 │   │   ├── __init__.py
 │   │   ├── main.py
 │   │   ├── core/
-│   │   │   ├── __init__.py
+│   │   │   ├── __init__.py                                                     
 │   │   │   ├── config.py
 │   │   │   ├── security.py
 │   │   │   └── database.py
@@ -36,3 +36,21 @@ animehub/
 ├── frontend/          # пока пусто, займёмся позже15:39 18.09.2026
 ├── .gitignore
 └── README.md
+
+
+username: testuser
+
+password: test12345
+
+
+
+
+cd C:\animehub
+docker compose up -d
+cd C:\animehub
+docker compose down
+
+docker compose ps
+
+cd C:\animehub\frontend
+npm run dev -- --host

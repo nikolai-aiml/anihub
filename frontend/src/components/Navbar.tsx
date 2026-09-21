@@ -1,7 +1,12 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import { BellIcon, MenuIcon } from "./icons";
 
-export function Navbar() {
+interface NavbarProps {
+  onMenuClick?: () => void;
+}
+
+export function Navbar({ onMenuClick }: NavbarProps) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -11,33 +16,60 @@ export function Navbar() {
   };
 
   return (
-    <nav className="border-b border-border bg-surface/50 backdrop-blur sticky top-0 z-10">
-      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <Link
-          to="/"
-          className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent"
-        >
-          AnimeHub
-        </Link>
+    <nav className="sticky top-0 z-50 glass border-b border-white/5">
+      <div className="px-4 lg:px-6 h-16 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          {/* Кнопка меню — только для авторизованных на мобильном */}
+          {user && onMenuClick && (
+            <button
+              onClick={onMenuClick}
+              className="lg:hidden p-2 rounded-lg hover:bg-white/5 transition-colors text-gray-300"
+              aria-label="Открыть меню"
+            >
+              <MenuIcon />
+            </button>
+          )}
 
-        <div className="flex items-center gap-6">
+          {/* Логотип */}
           <Link
-            to="/catalog"
-            className="text-sm hover:text-primary transition-colors"
+            to="/"
+            className="text-2xl font-bold font-display bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-gradient-shift bg-[length:200%_100%]"
           >
-            Каталог
+            ANIHUB
           </Link>
+        </div>
+
+        {/* Правый блок */}
+        <div className="flex items-center gap-2">
           {user ? (
             <>
+              {/* Уведомления */}
+              <button
+                className="relative p-2 rounded-lg hover:bg-white/5 transition-colors text-gray-300 hover:text-white"
+                aria-label="Уведомления"
+              >
+                <BellIcon />
+                {/* Бейдж — заглушка */}
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-accent rounded-full animate-pulse" />
+              </button>
+
+              {/* Профиль */}
               <Link
                 to="/profile"
-                className="text-sm hover:text-primary transition-colors"
+                className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/5 transition-colors"
               >
-                {user.username}
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-sm font-bold text-white">
+                  {user.username[0].toUpperCase()}
+                </div>
+                <span className="hidden md:block text-sm font-medium text-white">
+                  {user.username}
+                </span>
               </Link>
+
+              {/* Выйти */}
               <button
                 onClick={handleLogout}
-                className="text-sm text-muted hover:text-white transition-colors"
+                className="hidden md:block px-4 py-2 text-sm font-medium text-muted hover:text-white rounded-lg hover:bg-white/5 transition-all"
               >
                 Выйти
               </button>
@@ -46,11 +78,14 @@ export function Navbar() {
             <>
               <Link
                 to="/login"
-                className="text-sm hover:text-primary transition-colors"
+                className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white rounded-lg hover:bg-white/5 transition-all"
               >
                 Войти
               </Link>
-              <Link to="/register" className="btn-primary text-sm">
+              <Link
+                to="/register"
+                className="px-5 py-2 text-sm font-semibold text-white rounded-xl glass-button hover:bg-primary/25 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/20 transition-all"
+              >
                 Регистрация
               </Link>
             </>
