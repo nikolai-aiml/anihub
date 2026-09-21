@@ -6,6 +6,13 @@ from app.schemas.library import (
     LibraryEntryRead,
     LibraryEntryUpdate,
 )
+
+from app.schemas.statistics import (
+    GenreCount,
+    MonthActivity,
+    StatisticsSummary,
+    UserStatistics,
+)
 from app.schemas.profile import ProfileRead, ProfileStats
 from app.schemas.rating import RatingCreate, RatingRead, RatingSummary
 from app.schemas.review import (
@@ -48,4 +55,8 @@ __all__ = [
     "UserCreate",
     "UserRead",
     "UserUpdate",
+    "GenreCount",
+    "MonthActivity",
+    "StatisticsSummary",
+    "UserStatistics",
 ]

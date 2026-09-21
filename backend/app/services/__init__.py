@@ -4,6 +4,7 @@ from app.services.favorite import FavoriteService
 from app.services.library import LibraryService
 from app.services.rating import RatingService
 from app.services.review import ReviewService
+from app.services.statistics import StatisticsService
 from app.services.user import UserService
 
 __all__ = [
@@ -13,5 +14,6 @@ __all__ = [
     "LibraryService",
     "RatingService",
     "ReviewService",
+    "StatisticsService",
     "UserService",
 ]
