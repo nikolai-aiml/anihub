@@ -43,3 +43,7 @@ class User(Base):
         back_populates="user",
         cascade="all, delete-orphan",
     )
+    library_entries: Mapped[list[LibraryEntry]] = relationship(
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
