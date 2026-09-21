@@ -9,16 +9,12 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.core.database import Base
 
 if TYPE_CHECKING:
-    from app.models.favorite import Favorite
-if TYPE_CHECKING:
-    from app.models.favorite import Favorite
-    from app.models.library import LibraryEntry
-    from app.models.rating import Rating
-if TYPE_CHECKING:
+    from app.models.achievement import UserAchievement
     from app.models.favorite import Favorite
     from app.models.library import LibraryEntry
     from app.models.rating import Rating
     from app.models.review import Review
+
 
 class User(Base):
     __tablename__ = "users"
@@ -60,6 +56,10 @@ class User(Base):
         cascade="all, delete-orphan",
     )
     reviews: Mapped[list[Review]] = relationship(
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+    achievements: Mapped[list[UserAchievement]] = relationship(
         back_populates="user",
         cascade="all, delete-orphan",
     )

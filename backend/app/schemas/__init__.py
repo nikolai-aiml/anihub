@@ -22,6 +22,7 @@ from app.schemas.review import (
     ReviewRead,
     ReviewUpdate,
 )
+from app.schemas.achievement import AchievementRead, UserAchievementRead
 from app.schemas.user import (
     Token,
     TokenPayload,
@@ -59,4 +60,6 @@ __all__ = [
     "MonthActivity",
     "StatisticsSummary",
     "UserStatistics",
+    "AchievementRead",
+    "UserAchievementRead",
 ]

@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 
 from app.api.v1 import (
+    achievements,
     anime,
     auth,
     favorites,
@@ -20,3 +21,4 @@ api_router.include_router(library.router)
 api_router.include_router(ratings.router)
 api_router.include_router(reviews.router)
 api_router.include_router(statistics.router)
+api_router.include_router(achievements.router)
