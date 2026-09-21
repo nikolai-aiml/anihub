@@ -7,6 +7,13 @@ from app.schemas.library import (
     LibraryEntryUpdate,
 )
 from app.schemas.rating import RatingCreate, RatingRead, RatingSummary
+from app.schemas.review import (
+    ReviewAuthor,
+    ReviewCreate,
+    ReviewLikeStatus,
+    ReviewRead,
+    ReviewUpdate,
+)
 from app.schemas.user import (
     Token,
     TokenPayload,
@@ -28,6 +35,11 @@ __all__ = [
     "RatingCreate",
     "RatingRead",
     "RatingSummary",
+    "ReviewAuthor",
+    "ReviewCreate",
+    "ReviewLikeStatus",
+    "ReviewRead",
+    "ReviewUpdate",
     "Token",
     "TokenPayload",
     "UserCreate",

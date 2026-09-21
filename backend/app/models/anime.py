@@ -22,11 +22,11 @@ from app.core.database import Base
 
 if TYPE_CHECKING:
     from app.models.genre import Genre
-if TYPE_CHECKING:
-
     from app.models.genre import Genre
     from app.models.rating import Rating
-
+    from app.models.genre import Genre
+    from app.models.rating import Rating
+    from app.models.review import Review
 
 anime_genres = Table(
     "anime_genres",
@@ -95,6 +95,10 @@ class Anime(Base):
         lazy="selectin",
     )
     ratings: Mapped[list[Rating]] = relationship(
+        back_populates="anime",
+        cascade="all, delete-orphan",
+    )
+    reviews: Mapped[list[Review]] = relationship(
         back_populates="anime",
         cascade="all, delete-orphan",
     )
