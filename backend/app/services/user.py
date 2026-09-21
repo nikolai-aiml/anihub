@@ -13,6 +13,21 @@ class UserService:
 
     async def get_profile(self, user: User) -> User:
         return user
+    async def get_full_profile(self, user: User) -> "ProfileRead":
+        """Возвращает профиль со статистикой."""
+        from app.schemas.profile import ProfileRead, ProfileStats
+
+        stats_dict = await self.users.get_profile_stats(user.id)
+
+        return ProfileRead(
+            id=user.id,
+            username=user.username,
+            email=user.email,
+            avatar_url=user.avatar_url,
+            bio=user.bio,
+            created_at=user.created_at,
+            stats=ProfileStats(**stats_dict),
+        )
 
     async def update_profile(self, user: User, data: UserUpdate) -> User:
         # exclude_unset=True — берём только те поля, что реально переданы

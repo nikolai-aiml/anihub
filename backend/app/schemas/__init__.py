@@ -6,6 +6,7 @@ from app.schemas.library import (
     LibraryEntryRead,
     LibraryEntryUpdate,
 )
+from app.schemas.profile import ProfileRead, ProfileStats
 from app.schemas.rating import RatingCreate, RatingRead, RatingSummary
 from app.schemas.review import (
     ReviewAuthor,
@@ -32,6 +33,8 @@ __all__ = [
     "LibraryEntryRead",
     "LibraryEntryUpdate",
     "PaginatedAnime",
+    "ProfileRead",
+    "ProfileStats",
     "RatingCreate",
     "RatingRead",
     "RatingSummary",
