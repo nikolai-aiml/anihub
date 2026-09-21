@@ -65,3 +65,43 @@ export interface RegisterData {
   password: string;
   password_confirm: string;
 }
+// Library
+export type LibraryStatus =
+  | "planned"
+  | "watching"
+  | "completed"
+  | "on_hold"
+  | "dropped";
+
+export interface LibraryEntry {
+  id: number;
+  anime_id: number;
+  status: LibraryStatus;
+  created_at: string;
+  updated_at: string;
+  anime: AnimeListItem;
+}
+
+export interface LibraryStats {
+  planned: number;
+  watching: number;
+  completed: number;
+  on_hold: number;
+  dropped: number;
+}
+
+export const LIBRARY_STATUS_LABELS: Record<LibraryStatus, string> = {
+  planned: "Буду смотреть",
+  watching: "Смотрю",
+  completed: "Завершено",
+  on_hold: "Отложено",
+  dropped: "Брошено",
+};
+
+export const LIBRARY_STATUS_COLORS: Record<LibraryStatus, string> = {
+  planned: "text-blue-400 bg-blue-500/10 border-blue-500/30",
+  watching: "text-purple-400 bg-purple-500/10 border-purple-500/30",
+  completed: "text-green-400 bg-green-500/10 border-green-500/30",
+  on_hold: "text-yellow-400 bg-yellow-500/10 border-yellow-500/30",
+  dropped: "text-red-400 bg-red-500/10 border-red-500/30",
+};

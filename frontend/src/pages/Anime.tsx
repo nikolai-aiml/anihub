@@ -6,6 +6,7 @@ import { Loader } from "../components/Loader";
 import { HeartIcon } from "../components/icons";
 import { useAuth } from "../contexts/AuthContext";
 import { useToast } from "../contexts/ToastContext";
+import { LibraryButton } from "../components/LibraryButton";
 
 export function Anime() {
   const { id } = useParams<{ id: string }>();
@@ -155,28 +156,26 @@ export function Anime() {
           </div>
 
           {/* Кнопки */}
-          <div className="flex flex-wrap gap-3 mt-8">
-            <button
-              onClick={handleFavoriteToggle}
-              disabled={addMutation.isPending || removeMutation.isPending}
-              className={`
-                inline-flex items-center gap-2 px-5 py-3 rounded-xl font-medium
-                transition-all duration-300
-                ${
-                  isFavorite
-                    ? "bg-accent/20 border border-accent/50 text-accent hover:bg-accent/30"
-                    : "glass-button hover:bg-primary/25 hover:border-primary/50"
-                }
-              `}
-            >
-              <HeartIcon className="w-5 h-5" filled={isFavorite} />
-              {isFavorite ? "В избранном" : "В избранное"}
-            </button>
+            <div className="flex flex-wrap gap-3 mt-8">
+              <button
+                onClick={handleFavoriteToggle}
+                disabled={addMutation.isPending || removeMutation.isPending}
+                className={`
+                  inline-flex items-center gap-2 px-5 py-3 rounded-xl font-medium
+                  transition-all duration-300
+                  ${
+                    isFavorite
+                      ? "bg-accent/20 border border-accent/50 text-accent hover:bg-accent/30"
+                      : "glass-button hover:bg-primary/25 hover:border-primary/50"
+                  }
+                `}
+              >
+                <HeartIcon className="w-5 h-5" filled={isFavorite} />
+                {isFavorite ? "В избранном" : "В избранное"}
+              </button>
 
-            <button className="btn-primary">
-              Добавить в библиотеку
-            </button>
-          </div>
+              <LibraryButton animeId={animeId} />
+            </div>
         </div>
       </div>
     </div>
