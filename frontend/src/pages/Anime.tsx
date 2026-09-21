@@ -9,6 +9,11 @@ import { useToast } from "../contexts/ToastContext";
 import { LibraryButton } from "../components/LibraryButton";
 import { useRating } from "../hooks/useRating";
 import { StarRating } from "../components/StarRating";
+import { useState } from "react";
+import { reviewsApi } from "../api/reviews";
+import { ReviewCard } from "../components/ReviewCard";
+import { ReviewForm } from "../components/ReviewForm";
+import type { Review } from "../types";
 
 export function Anime() {
   const { id } = useParams<{ id: string }>();
@@ -24,6 +29,19 @@ export function Anime() {
     rate: handleRate,
     remove: handleRemoveRating,
 } = useRating(animeId);
+
+  // Отзывы
+  const [reviewSort, setReviewSort] = useState<"new" | "popular">("new");
+  const [editingReview, setEditingReview] = useState<Review | null>(null);
+
+  const { data: reviews = [] } = useQuery({
+    queryKey: ["reviews", animeId, reviewSort],
+    queryFn: () => reviewsApi.list(animeId, reviewSort),
+    enabled: !isNaN(animeId),
+  });
+
+  const myReview = reviews.find((r) => r.is_own);
+  const otherReviews = reviews.filter((r) => !r.is_own);
 
   // Аниме
   const { data: anime, isLoading, error } = useQuery({
@@ -185,7 +203,77 @@ export function Anime() {
                 disabled={ratingPending}
                 size="lg"
               />
+              </div>
+                    {/* ============ ОТЗЫВЫ ============ */}
+        <div className="mt-12 pt-8 border-t border-white/10">
+          <h2 className="text-2xl font-bold font-display mb-6">
+            Отзывы
+            {reviews.length > 0 && (
+              <span className="text-muted text-base font-normal ml-2">
+                ({reviews.length})
+              </span>
+            )}
+          </h2>
+
+          {/* Форма — только для авторизованных */}
+          {user && !myReview && !editingReview && (
+            <div className="mb-6">
+              <ReviewForm animeId={animeId} />
             </div>
+          )}
+
+          {/* Редактирование своего отзыва */}
+          {user && editingReview && (
+            <div className="mb-6">
+              <ReviewForm
+                animeId={animeId}
+                editingReview={editingReview}
+                onCancelEdit={() => setEditingReview(null)}
+              />
+            </div>
+          )}
+
+          {/* Сортировка */}
+          {reviews.length > 1 && (
+            <div className="flex gap-2 mb-4">
+              {(["new", "popular"] as const).map((s) => (
+                <button
+                  key={s}
+                  onClick={() => setReviewSort(s)}
+                  className={`
+                    px-4 py-2 rounded-xl text-sm font-medium transition-all
+                    ${
+                      reviewSort === s
+                        ? "bg-primary/20 text-primary border border-primary/40"
+                        : "text-gray-400 hover:text-white hover:bg-white/5 border border-transparent"
+                    }
+                  `}
+                >
+                  {s === "new" ? "Новые" : "Популярные"}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Список отзывов */}
+          {reviews.length === 0 && (
+            <div className="text-center py-12 text-muted">
+              Пока нет отзывов. Будь первым!
+            </div>
+          )}
+
+          <div className="space-y-4">
+            {myReview && (
+              <ReviewCard
+                review={myReview}
+                onEdit={(r) => setEditingReview(r)}
+              />
+            )}
+            {otherReviews.map((review) => (
+              <ReviewCard key={review.id} review={review} />
+            ))}
+          </div>
+        </div>
           {/* Кнопки */}
             <div className="flex flex-wrap gap-3 mt-8">
               <button

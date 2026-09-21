@@ -119,3 +119,32 @@ export interface RatingSummary {
   count: number;
   user_rating: number | null;
 }
+// Reviews
+export interface ReviewAuthor {
+  id: number;
+  username: string;
+  avatar_url: string | null;
+}
+
+export interface Review {
+  id: number;
+  anime_id: number;
+  rating: number | null;
+  text: string;
+  likes_count: number;
+  created_at: string;
+  updated_at: string;
+  user: ReviewAuthor;
+  is_liked: boolean;
+  is_own: boolean;
+}
+
+export interface ReviewCreate {
+  text: string;
+  rating?: number | null;
+}
+
+export interface ReviewLikeStatus {
+  is_liked: boolean;
+  likes_count: number;
+}

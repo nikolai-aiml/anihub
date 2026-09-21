@@ -70,8 +70,14 @@ class ReviewRepository:
         )
         self.db.add(review)
         await self.db.commit()
-        await self.db.refresh(review, ["user"])
-        return review
+
+        # Перезагружаем с eager-load user
+        result = await self.db.execute(
+            select(Review)
+            .where(Review.id == review.id)
+            .options(selectinload(Review.user))
+        )
+        return result.scalar_one()
 
     async def update(
         self, review: Review, text: str | None, rating: int | None
@@ -81,8 +87,14 @@ class ReviewRepository:
         if rating is not None:
             review.rating = rating
         await self.db.commit()
-        await self.db.refresh(review, ["user"])
-        return review
+
+        # Перезагружаем с eager-load user
+        result = await self.db.execute(
+            select(Review)
+            .where(Review.id == review.id)
+            .options(selectinload(Review.user))
+        )
+        return result.scalar_one()
 
     async def remove(self, review: Review) -> None:
         await self.db.delete(review)
