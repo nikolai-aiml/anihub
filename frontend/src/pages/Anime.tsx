@@ -1,17 +1,70 @@
 import { useParams, Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { animeApi } from "../api/anime";
+import { favoritesApi } from "../api/favorites";
 import { Loader } from "../components/Loader";
+import { HeartIcon } from "../components/icons";
+import { useAuth } from "../contexts/AuthContext";
+import { useToast } from "../contexts/ToastContext";
 
 export function Anime() {
   const { id } = useParams<{ id: string }>();
   const animeId = Number(id);
+  const { user } = useAuth();
+  const { showToast } = useToast();
+  const queryClient = useQueryClient();
 
+  // Аниме
   const { data: anime, isLoading, error } = useQuery({
     queryKey: ["anime", animeId],
     queryFn: () => animeApi.getById(animeId),
     enabled: !isNaN(animeId),
   });
+
+  // Избранное
+  const { data: favorites = [] } = useQuery({
+    queryKey: ["favorites"],
+    queryFn: () => favoritesApi.list(),
+    enabled: !!user,
+  });
+
+  const isFavorite = favorites.some((f) => f.anime_id === animeId);
+
+  // Добавить
+  const addMutation = useMutation({
+    mutationFn: () => favoritesApi.add(animeId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["favorites"] });
+      showToast("Добавлено в избранное", "success");
+    },
+    onError: (err: any) => {
+      showToast(err.response?.data?.detail || "Ошибка", "error");
+    },
+  });
+
+  // Удалить
+  const removeMutation = useMutation({
+    mutationFn: () => favoritesApi.remove(animeId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["favorites"] });
+      showToast("Удалено из избранного", "success");
+    },
+    onError: (err: any) => {
+      showToast(err.response?.data?.detail || "Ошибка", "error");
+    },
+  });
+
+  const handleFavoriteToggle = () => {
+    if (!user) {
+      showToast("Войдите, чтобы добавить в избранное", "info");
+      return;
+    }
+    if (isFavorite) {
+      removeMutation.mutate();
+    } else {
+      addMutation.mutate();
+    }
+  };
 
   if (isLoading) return <Loader />;
 
@@ -101,7 +154,29 @@ export function Anime() {
             )}
           </div>
 
-          <button className="btn-primary mt-8">Добавить в библиотеку</button>
+          {/* Кнопки */}
+          <div className="flex flex-wrap gap-3 mt-8">
+            <button
+              onClick={handleFavoriteToggle}
+              disabled={addMutation.isPending || removeMutation.isPending}
+              className={`
+                inline-flex items-center gap-2 px-5 py-3 rounded-xl font-medium
+                transition-all duration-300
+                ${
+                  isFavorite
+                    ? "bg-accent/20 border border-accent/50 text-accent hover:bg-accent/30"
+                    : "glass-button hover:bg-primary/25 hover:border-primary/50"
+                }
+              `}
+            >
+              <HeartIcon className="w-5 h-5" filled={isFavorite} />
+              {isFavorite ? "В избранном" : "В избранное"}
+            </button>
+
+            <button className="btn-primary">
+              Добавить в библиотеку
+            </button>
+          </div>
         </div>
       </div>
     </div>

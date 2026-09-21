@@ -41,4 +41,5 @@ class FavoriteService:
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Аниме не в избранном",
             )
-        await self.favorites.remove(favorite)
+        # Передаём user_id и anime_id, а не объект favorite
+        await self.favorites.remove(user_id, anime_id)

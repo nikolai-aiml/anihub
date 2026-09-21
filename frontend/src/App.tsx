@@ -16,6 +16,8 @@ import { Achievements } from "./pages/Achievements";
 import { Statistics } from "./pages/Statistics";
 import { Settings } from "./pages/Settings";
 import { NotFound } from "./pages/NotFound";
+import { ToastProvider } from "./contexts/ToastContext";
+import { ToastContainer } from "./components/ToastContainer";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -27,30 +29,33 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <AuthProvider>
-          <AppLayout>
-            <Routes>
-              {/* Публичные */}
-              <Route path="/" element={<Home />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/catalog" element={<Catalog />} />
-              <Route path="/anime/:id" element={<Anime />} />
-              <Route path="/search" element={<Search />} />
+        <ToastProvider>
+          <AuthProvider>
+            <AppLayout>
+              <ToastContainer />
+              <Routes>
+                {/* Публичные */}
+                <Route path="/" element={<Home />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/catalog" element={<Catalog />} />
+                <Route path="/anime/:id" element={<Anime />} />
+                <Route path="/search" element={<Search />} />
 
-              {/* Защищённые */}
-              <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-              <Route path="/library" element={<ProtectedRoute><Library /></ProtectedRoute>} />
-              <Route path="/favorites" element={<ProtectedRoute><Favorites /></ProtectedRoute>} />
-              <Route path="/achievements" element={<ProtectedRoute><Achievements /></ProtectedRoute>} />
-              <Route path="/statistics" element={<ProtectedRoute><Statistics /></ProtectedRoute>} />
-              <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+                {/* Защищённые */}
+                <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+                <Route path="/library" element={<ProtectedRoute><Library /></ProtectedRoute>} />
+                <Route path="/favorites" element={<ProtectedRoute><Favorites /></ProtectedRoute>} />
+                <Route path="/achievements" element={<ProtectedRoute><Achievements /></ProtectedRoute>} />
+                <Route path="/statistics" element={<ProtectedRoute><Statistics /></ProtectedRoute>} />
+                <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
 
-              {/* 404 */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </AppLayout>
-        </AuthProvider>
+                {/* 404 */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </AppLayout>
+          </AuthProvider>
+        </ToastProvider>
       </BrowserRouter>
     </QueryClientProvider>
   );

@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -11,7 +11,6 @@ class FavoriteRepository:
         self.db = db
 
     async def get_list(self, user_id: int) -> list[Favorite]:
-        """Все избранные аниме пользователя с жанрами."""
         result = await self.db.execute(
             select(Favorite)
             .where(Favorite.user_id == user_id)
@@ -23,7 +22,6 @@ class FavoriteRepository:
     async def get_by_user_and_anime(
         self, user_id: int, anime_id: int
     ) -> Favorite | None:
-        """Проверяет, добавлено ли аниме в избранное."""
         result = await self.db.execute(
             select(Favorite).where(
                 Favorite.user_id == user_id,
@@ -33,14 +31,24 @@ class FavoriteRepository:
         return result.scalar_one_or_none()
 
     async def add(self, user_id: int, anime_id: int) -> Favorite:
-        """Добавляет аниме в избранное."""
         favorite = Favorite(user_id=user_id, anime_id=anime_id)
         self.db.add(favorite)
         await self.db.commit()
-        await self.db.refresh(favorite)
-        return favorite
 
-    async def remove(self, favorite: Favorite) -> None:
-        """Удаляет из избранного."""
-        await self.db.delete(favorite)
+        # Перезагружаем с eager-load anime + genres
+        result = await self.db.execute(
+            select(Favorite)
+            .where(Favorite.id == favorite.id)
+            .options(selectinload(Favorite.anime).selectinload(Anime.genres))
+        )
+        return result.scalar_one()
+
+    async def remove(self, user_id: int, anime_id: int) -> None:
+        """Удаляет из избранного напрямую через SQL DELETE."""
+        await self.db.execute(
+            delete(Favorite).where(
+                Favorite.user_id == user_id,
+                Favorite.anime_id == anime_id,
+            )
+        )
         await self.db.commit()
