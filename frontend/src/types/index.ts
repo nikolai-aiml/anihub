@@ -105,3 +105,17 @@ export const LIBRARY_STATUS_COLORS: Record<LibraryStatus, string> = {
   on_hold: "text-yellow-400 bg-yellow-500/10 border-yellow-500/30",
   dropped: "text-red-400 bg-red-500/10 border-red-500/30",
 };
+// Ratings
+export interface Rating {
+  id: number;
+  anime_id: number;
+  value: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface RatingSummary {
+  average: number;
+  count: number;
+  user_rating: number | null;
+}

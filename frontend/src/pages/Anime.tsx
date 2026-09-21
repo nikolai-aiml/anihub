@@ -7,6 +7,8 @@ import { HeartIcon } from "../components/icons";
 import { useAuth } from "../contexts/AuthContext";
 import { useToast } from "../contexts/ToastContext";
 import { LibraryButton } from "../components/LibraryButton";
+import { useRating } from "../hooks/useRating";
+import { StarRating } from "../components/StarRating";
 
 export function Anime() {
   const { id } = useParams<{ id: string }>();
@@ -14,6 +16,14 @@ export function Anime() {
   const { user } = useAuth();
   const { showToast } = useToast();
   const queryClient = useQueryClient();
+  
+
+  const {
+    summary: rating,
+    isPending: ratingPending,
+    rate: handleRate,
+    remove: handleRemoveRating,
+} = useRating(animeId);
 
   // Аниме
   const { data: anime, isLoading, error } = useQuery({
@@ -110,13 +120,15 @@ export function Anime() {
 
           <div className="flex flex-wrap items-center gap-4 mt-4 text-sm">
             <span className="bg-primary/20 text-primary px-3 py-1 rounded-full font-bold">
-              ⭐ {anime.rating.toFixed(1)}
+              ⭐ {rating ? rating.average.toFixed(1) : anime.rating.toFixed(1)}
             </span>
-            <span className="text-muted">{anime.rating_count} оценок</span>
+            <span className="text-muted">
+              {rating ? rating.count : anime.rating_count} оценок
+            </span>
             {anime.year && <span className="text-muted">{anime.year}</span>}
             <span className="text-muted uppercase">{anime.type}</span>
             <span className="text-muted">{anime.status}</span>
-          </div>
+        </div>
 
           <div className="flex flex-wrap gap-2 mt-4">
             {anime.genres.map((g) => (
@@ -154,7 +166,26 @@ export function Anime() {
               </div>
             )}
           </div>
-
+            {/* Оценка */}
+            <div className="mt-6 p-4 rounded-xl bg-surface/50 border border-white/5">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-sm font-medium text-gray-300">
+                  Ваша оценка
+                </span>
+                {rating?.user_rating && (
+                  <span className="text-xs text-muted">
+                    Оценено
+                  </span>
+                )}
+              </div>
+              <StarRating
+                value={rating?.user_rating ?? null}
+                onChange={handleRate}
+                onRemove={handleRemoveRating}
+                disabled={ratingPending}
+                size="lg"
+              />
+            </div>
           {/* Кнопки */}
             <div className="flex flex-wrap gap-3 mt-8">
               <button
