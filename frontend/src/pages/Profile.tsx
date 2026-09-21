@@ -1,45 +1,64 @@
-import { useAuth } from "../contexts/AuthContext";
+import { useState } from "react";
+import { useProfile } from "../hooks/useProfile";
+import { ProfileHeader } from "../components/ProfileHeader";
+import { ProfileStats } from "../components/ProfileStats";
+import { Loader } from "../components/Loader";
+import { Library } from "./Library";
+import { Favorites } from "./Favorites";
+
+type Tab = "overview" | "library" | "favorites";
+
+const TABS: Array<{ value: Tab; label: string }> = [
+  { value: "overview", label: "Обзор" },
+  { value: "library", label: "Библиотека" },
+  { value: "favorites", label: "Избранное" },
+];
 
 export function Profile() {
-  const { user } = useAuth();
-  if (!user) return null;
+  const { data: profile, isLoading } = useProfile();
+  const [activeTab, setActiveTab] = useState<Tab>("overview");
 
-  const registeredAt = new Date(user.created_at).toLocaleDateString("ru-RU");
+  if (isLoading) return <Loader />;
+  if (!profile) return null;
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <div className="card p-8">
-        <div className="flex items-start gap-6">
-          <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-4xl font-bold">
-            {user.username[0].toUpperCase()}
-          </div>
-          <div className="flex-1">
-            <h1 className="text-3xl font-bold">{user.username}</h1>
-            <p className="text-muted mt-1">{user.email}</p>
-            {user.bio && <p className="mt-4">{user.bio}</p>}
-            <p className="text-sm text-muted mt-4">
-              Зарегистрирован: {registeredAt}
+    <div className="container mx-auto px-6 py-8">
+      <ProfileHeader profile={profile} />
+
+      <div className="mt-8">
+        <ProfileStats stats={profile.stats} />
+      </div>
+
+      <div className="flex flex-wrap gap-2 mt-8 mb-6">
+        {TABS.map((tab) => (
+          <button
+            key={tab.value}
+            onClick={() => setActiveTab(tab.value)}
+            className={`
+              px-5 py-2.5 rounded-xl text-sm font-medium transition-all
+              ${
+                activeTab === tab.value
+                  ? "bg-primary/20 text-primary border border-primary/40"
+                  : "text-gray-400 hover:text-white hover:bg-white/5 border border-transparent"
+              }
+            `}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      <div>
+        {activeTab === "overview" && (
+          <div className="text-center py-12">
+            <p className="text-muted">
+              Добро пожаловать в твой профиль, {profile.username}!
             </p>
           </div>
-        </div>
+        )}
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8 pt-8 border-t border-border">
-          {[
-            { label: "Смотрю", value: 0 },
-            { label: "Просмотрено", value: 0 },
-            { label: "В планах", value: 0 },
-            { label: "Эпизодов", value: 0 },
-          ].map((stat) => (
-            <div key={stat.label} className="text-center">
-              <div className="text-3xl font-bold text-primary">{stat.value}</div>
-              <div className="text-sm text-muted mt-1">{stat.label}</div>
-            </div>
-          ))}
-        </div>
-
-        <p className="text-sm text-muted text-center mt-6">
-          Статистика появится после добавления библиотеки
-        </p>
+        {activeTab === "library" && <Library />}
+        {activeTab === "favorites" && <Favorites />}
       </div>
     </div>
   );

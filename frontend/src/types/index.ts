@@ -148,3 +148,20 @@ export interface ReviewLikeStatus {
   is_liked: boolean;
   likes_count: number;
 }
+// Profile
+export interface ProfileStats {
+  library_total: number;
+  ratings_total: number;
+  reviews_total: number;
+  favorites_total: number;
+}
+
+export interface Profile {
+  id: number;
+  username: string;
+  email: string;
+  avatar_url: string | null;
+  bio: string | null;
+  created_at: string;
+  stats: ProfileStats;
+}
