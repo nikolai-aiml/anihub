@@ -10,6 +10,10 @@ from app.core.database import Base
 
 if TYPE_CHECKING:
     from app.models.favorite import Favorite
+if TYPE_CHECKING:
+    from app.models.favorite import Favorite
+    from app.models.library import LibraryEntry
+    from app.models.rating import Rating
 
 
 class User(Base):
@@ -44,6 +48,10 @@ class User(Base):
         cascade="all, delete-orphan",
     )
     library_entries: Mapped[list[LibraryEntry]] = relationship(
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+    ratings: Mapped[list[Rating]] = relationship(
         back_populates="user",
         cascade="all, delete-orphan",
     )

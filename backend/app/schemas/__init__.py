@@ -6,6 +6,7 @@ from app.schemas.library import (
     LibraryEntryRead,
     LibraryEntryUpdate,
 )
+from app.schemas.rating import RatingCreate, RatingRead, RatingSummary
 from app.schemas.user import (
     Token,
     TokenPayload,
@@ -24,6 +25,9 @@ __all__ = [
     "LibraryEntryRead",
     "LibraryEntryUpdate",
     "PaginatedAnime",
+    "RatingCreate",
+    "RatingRead",
+    "RatingSummary",
     "Token",
     "TokenPayload",
     "UserCreate",

@@ -22,6 +22,10 @@ from app.core.database import Base
 
 if TYPE_CHECKING:
     from app.models.genre import Genre
+if TYPE_CHECKING:
+
+    from app.models.genre import Genre
+    from app.models.rating import Rating
 
 
 anime_genres = Table(
@@ -89,6 +93,10 @@ class Anime(Base):
         secondary="anime_genres",
         back_populates="anime",
         lazy="selectin",
+    )
+    ratings: Mapped[list[Rating]] = relationship(
+        back_populates="anime",
+        cascade="all, delete-orphan",
     )
 
     def __repr__(self) -> str:
