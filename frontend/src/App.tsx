@@ -18,6 +18,7 @@ import { Settings } from "./pages/Settings";
 import { NotFound } from "./pages/NotFound";
 import { ToastProvider } from "./contexts/ToastContext";
 import { ToastContainer } from "./components/ToastContainer";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -27,6 +28,7 @@ const queryClient = new QueryClient({
 
 function App() {
   return (
+  <ErrorBoundary>
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <ToastProvider>
@@ -58,6 +60,7 @@ function App() {
         </ToastProvider>
       </BrowserRouter>
     </QueryClientProvider>
+  </ErrorBoundary>
   );
 }
 

@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { animeApi } from "../api/anime";
 import { AnimeCard } from "../components/AnimeCard";
 import { Loader } from "../components/Loader";
+import { AnimeGridSkeleton } from "../components/AnimeCardSkeleton";
 
 export function Catalog() {
   const [page, setPage] = useState(1);
@@ -54,8 +55,7 @@ export function Catalog() {
         </select>
       </div>
 
-      {isLoading && <Loader />}
-      {error && (
+      {isLoading && <AnimeGridSkeleton count={20} />}      {error && (
         <div className="text-red-400 text-center py-12">Ошибка загрузки</div>
       )}
 

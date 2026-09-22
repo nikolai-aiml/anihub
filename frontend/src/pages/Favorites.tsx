@@ -5,6 +5,8 @@ import { AnimeCard } from "../components/AnimeCard";
 import { Loader } from "../components/Loader";
 import { HeartIcon, ArrowRightIcon } from "../components/icons";
 import { useToast } from "../contexts/ToastContext";
+import { EmptyState } from "../components/EmptyState";
+import { AnimeGridSkeleton } from "../components/AnimeCardSkeleton";
 
 export function Favorites() {
   const { showToast } = useToast();
@@ -26,26 +28,25 @@ export function Favorites() {
     },
     });
 
-  if (isLoading) return <Loader />;
+  if (isLoading) {
+  return (
+    <div className="container mx-auto px-6 py-8">
+      <div className="h-8 w-40 bg-white/5 rounded mb-8 animate-pulse" />
+      <AnimeGridSkeleton count={10} />
+    </div>
+  );
+}
 
   // Пустое состояние
   if (favorites.length === 0) {
     return (
-      <div className="container mx-auto px-6 py-20 text-center">
-        <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-primary/10 border border-primary/20 mb-6">
-          <HeartIcon className="w-10 h-10 text-primary" />
-        </div>
-        <h1 className="text-3xl font-bold font-display mb-3">
-          Здесь пока ничего нет
-        </h1>
-        <p className="text-muted max-w-md mx-auto mb-8">
-          Добавь аниме, чтобы собрать свою коллекцию.
-        </p>
-        <Link to="/catalog" className="btn-primary inline-flex items-center gap-2">
-          Открыть каталог
-          <ArrowRightIcon className="w-4 h-4" />
-        </Link>
-      </div>
+      <EmptyState
+        icon={<HeartIcon className="w-10 h-10" />}
+        title="Здесь пока ничего нет"
+        description="Добавь аниме, чтобы собрать свою коллекцию."
+        actionLabel="Открыть каталог"
+        actionTo="/catalog"
+      />
     );
   }
 
