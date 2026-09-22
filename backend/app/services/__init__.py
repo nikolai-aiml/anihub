@@ -8,6 +8,7 @@ from app.services.review import ReviewService
 from app.services.statistics import StatisticsService
 from app.services.user import UserService
 from app.services.notification import NotificationService
+from app.services.recommendations import RecommendationsService
 
 __all__ = [
     "AchievementService",
@@ -19,5 +20,6 @@ __all__ = [
     "ReviewService",
     "StatisticsService",
     "UserService",
+    "RecommendationsService",
     "NotificationService",
 ]

@@ -54,7 +54,7 @@ export function LibraryButton({ animeId }: LibraryButtonProps) {
   }, []);
 
   // Добавить
-  const addMutation = useMutation({
+    const addMutation = useMutation({
     mutationFn: (status: LibraryStatus) => libraryApi.add(animeId, status),
     onSuccess: (entry) => {
       queryClient.setQueryData<LibraryEntry[]>(["library", "all"], (old = []) => [
@@ -62,6 +62,7 @@ export function LibraryButton({ animeId }: LibraryButtonProps) {
         entry,
       ]);
       queryClient.invalidateQueries({ queryKey: ["library", "stats"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard"] });   // ← ДОБАВЬ
       showToast(`Добавлено: ${LIBRARY_STATUS_LABELS[entry.status]}`, "success");
       setIsOpen(false);
     },
@@ -70,7 +71,6 @@ export function LibraryButton({ animeId }: LibraryButtonProps) {
     },
   });
 
-  // Обновить статус
   const updateMutation = useMutation({
     mutationFn: (status: LibraryStatus) =>
       libraryApi.updateStatus(animeId, status),
@@ -79,6 +79,7 @@ export function LibraryButton({ animeId }: LibraryButtonProps) {
         old.map((e) => (e.anime_id === animeId ? entry : e))
       );
       queryClient.invalidateQueries({ queryKey: ["library", "stats"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard"] });   // ← ДОБАВЬ
       showToast(`Статус: ${LIBRARY_STATUS_LABELS[entry.status]}`, "success");
       setIsOpen(false);
     },
@@ -87,7 +88,6 @@ export function LibraryButton({ animeId }: LibraryButtonProps) {
     },
   });
 
-  // Удалить
   const removeMutation = useMutation({
     mutationFn: () => libraryApi.remove(animeId),
     onSuccess: () => {
@@ -95,6 +95,7 @@ export function LibraryButton({ animeId }: LibraryButtonProps) {
         old.filter((e) => e.anime_id !== animeId)
       );
       queryClient.invalidateQueries({ queryKey: ["library", "stats"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard"] });   // ← ДОБАВЬ
       showToast("Удалено из библиотеки", "success");
       setIsOpen(false);
     },

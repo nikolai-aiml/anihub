@@ -18,8 +18,10 @@ export function Favorites() {
   });
 
     const removeMutation = useMutation({
+    
     mutationFn: (animeId: number) => favoritesApi.remove(animeId),
     onSuccess: async () => {
+        queryClient.invalidateQueries({ queryKey: ["dashboard"] });
         await queryClient.refetchQueries({ queryKey: ["favorites"] });
         showToast("Удалено из избранного", "success");
     },

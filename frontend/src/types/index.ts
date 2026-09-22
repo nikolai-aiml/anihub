@@ -222,3 +222,11 @@ export interface Notification {
 export interface UnreadCount {
   count: number;
 }
+// Dashboard
+export interface UserDashboard {
+  continue_watching: AnimeListItem[];
+  recommendations: AnimeListItem[];
+  popular: AnimeListItem[];
+  new_releases: AnimeListItem[];
+  top_genres: string[];
+}

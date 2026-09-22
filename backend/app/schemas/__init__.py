@@ -7,6 +7,7 @@ from app.schemas.library import (
     LibraryEntryUpdate,
 )
 from app.schemas.notification import NotificationRead, UnreadCount
+from app.schemas.recommendations import UserDashboard
 
 from app.schemas.statistics import (
     GenreCount,
@@ -39,6 +40,7 @@ __all__ = [
     "AnimeRead",
     "FavoriteRead",
     "FavoriteStatus",
+    "UserDashboard",
     "GenreRead",
     "LibraryEntryCreate",
     "LibraryEntryRead",
