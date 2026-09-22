@@ -25,6 +25,7 @@ from app.schemas.review import (
 )
 from app.schemas.achievement import AchievementRead, UserAchievementRead
 from app.schemas.user import (
+    PasswordChange,
     Token,
     TokenPayload,
     UserCreate,
@@ -33,6 +34,7 @@ from app.schemas.user import (
 )
 
 __all__ = [
+    "PasswordChange",
     "AnimeListItem",
     "AnimeRead",
     "FavoriteRead",

@@ -29,6 +29,40 @@ class UserService:
             stats=ProfileStats(**stats_dict),
         )
 
+    async def change_password(
+        self,
+        user: User,
+        old_password: str,
+        new_password: str,
+        new_password_confirm: str,
+    ) -> None:
+        from app.core.security import hash_password, verify_password
+
+        # Проверка: старый пароль верный?
+        if not verify_password(old_password, user.hashed_password):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Неверный текущий пароль",
+            )
+
+        # Проверка: новый == подтверждение?
+        if new_password != new_password_confirm:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Новые пароли не совпадают",
+            )
+
+        # Проверка: новый не равен старому?
+        if verify_password(new_password, user.hashed_password):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Новый пароль не должен совпадать со старым",
+            )
+
+        # Меняем
+        user.hashed_password = hash_password(new_password)
+        await self.db.commit()
+
     async def update_profile(self, user: User, data: UserUpdate) -> User:
         # exclude_unset=True — берём только те поля, что реально переданы
         update_data = data.model_dump(exclude_unset=True)

@@ -10,8 +10,15 @@ export const authApi = {
   async register(data: RegisterData): Promise<User> {
     const response = await apiClient.post<User>("/auth/register", data);
     return response.data;
+    
   },
-
+  async changePassword(data: {
+    old_password: string;
+    new_password: string;
+    new_password_confirm: string;
+  }): Promise<void> {
+    await apiClient.post("/users/me/change-password", data);
+  },
   async login(credentials: LoginCredentials): Promise<TokenResponse> {
     const params = new URLSearchParams();
     params.append("username", credentials.username);
