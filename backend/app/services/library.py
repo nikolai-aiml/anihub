@@ -1,4 +1,5 @@
-from fastapi import HTTPException, status
+from fastapi import HTTPException
+from fastapi import status as http_status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.library import LibraryEntry, LibraryStatus
@@ -23,13 +24,13 @@ class LibraryService:
         self,
         user_id: int,
         anime_id: int,
-        status: LibraryStatus = LibraryStatus.PLANNED,
+        entry_status: LibraryStatus = LibraryStatus.PLANNED,
     ) -> LibraryEntry:
         # Проверяем, что аниме существует
         anime = await self.anime.get_by_id(anime_id)
         if not anime:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
+                status_code=http_status.HTTP_404_NOT_FOUND,
                 detail="Аниме не найдено",
             )
 
@@ -37,11 +38,11 @@ class LibraryService:
         existing = await self.library.get_by_user_and_anime(user_id, anime_id)
         if existing:
             raise HTTPException(
-                status_code=status.HTTP_409_CONFLICT,
+                status_code=http_status.HTTP_409_CONFLICT,
                 detail="Аниме уже в библиотеке",
             )
 
-        return await self.library.add(user_id, anime_id, status)
+        return await self.library.add(user_id, anime_id, entry_status)
 
     async def update_status(
         self, user_id: int, anime_id: int, new_status: LibraryStatus
@@ -49,14 +50,14 @@ class LibraryService:
         entry = await self.library.get_by_user_and_anime(user_id, anime_id)
         if not entry:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
+                status_code=http_status.HTTP_404_NOT_FOUND,
                 detail="Аниме не в библиотеке",
             )
 
         updated = await self.library.update_status(user_id, anime_id, new_status)
         if not updated:
             raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                status_code=http_status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="Ошибка обновления",
             )
         return updated
@@ -65,7 +66,7 @@ class LibraryService:
         entry = await self.library.get_by_user_and_anime(user_id, anime_id)
         if not entry:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
+                status_code=http_status.HTTP_404_NOT_FOUND,
                 detail="Аниме не в библиотеке",
             )
         await self.library.remove(user_id, anime_id)
