@@ -6,6 +6,7 @@ from app.schemas.library import (
     LibraryEntryRead,
     LibraryEntryUpdate,
 )
+from app.schemas.notification import NotificationRead, UnreadCount
 
 from app.schemas.statistics import (
     GenreCount,
@@ -62,4 +63,6 @@ __all__ = [
     "UserStatistics",
     "AchievementRead",
     "UserAchievementRead",
+    "NotificationRead",
+    "UnreadCount",
 ]

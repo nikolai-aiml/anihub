@@ -120,7 +120,7 @@ class ReviewService:
         if review.user_id == user_id:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Нельзя лайкать свой отзыв",
+                detail="Нельзя лайкать свой отзыв", 
             )
 
         existing = await self.reviews.get_like(user_id, review_id)
@@ -128,6 +128,23 @@ class ReviewService:
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
                 detail="Вы уже лайкнули этот отзыв",
+            )
+        if review.user_id != user_id and review.user_id != current_user_id:
+            # Только для чужих отзывов
+            from app.models.user import User
+            from app.services.notification import NotificationService
+
+            # Получаем username того, кто лайкнул
+            liker_result = await self.db.execute(
+                select(User).where(User.id == user_id)
+            )
+            liker = liker_result.scalar_one()
+
+            anime = await self.anime.get_by_id(review.anime_id)
+            anime_title = anime.title if anime else "аниме"
+
+            await NotificationService(self.db).notify_review_like(
+                review.user_id, liker.username, anime_title
             )
 
         await self.reviews.add_like(user_id, review_id)

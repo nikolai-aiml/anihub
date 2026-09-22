@@ -6,6 +6,7 @@ from app.api.v1 import (
     auth,
     favorites,
     library,
+    notifications,
     ratings,
     reviews,
     statistics,
@@ -22,3 +23,4 @@ api_router.include_router(ratings.router)
 api_router.include_router(reviews.router)
 api_router.include_router(statistics.router)
 api_router.include_router(achievements.router)
+api_router.include_router(notifications.router)

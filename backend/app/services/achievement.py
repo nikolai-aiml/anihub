@@ -126,5 +126,8 @@ class AchievementService:
             if current >= ach.target:
                 await self.achievements.unlock(user_id, ach.id)
                 newly_unlocked.append(ach.code)
-
+                # Уведомление
+                await NotificationService(self.db).notify_achievement(
+                user_id, ach.title, ach.icon
+    )
         return newly_unlocked

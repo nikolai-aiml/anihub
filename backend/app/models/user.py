@@ -9,6 +9,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.core.database import Base
 
 if TYPE_CHECKING:
+    from app.models.notification import Notification
     from app.models.achievement import UserAchievement
     from app.models.favorite import Favorite
     from app.models.library import LibraryEntry
@@ -60,6 +61,10 @@ class User(Base):
         cascade="all, delete-orphan",
     )
     achievements: Mapped[list[UserAchievement]] = relationship(
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+    notifications: Mapped[list[Notification]] = relationship(
         back_populates="user",
         cascade="all, delete-orphan",
     )
