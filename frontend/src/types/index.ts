@@ -230,3 +230,28 @@ export interface UserDashboard {
   new_releases: AnimeListItem[];
   top_genres: string[];
 }
+// Statistics
+export interface StatisticsSummary {
+  average_rating: number;
+  total_ratings: number;
+  library_total: number;
+  favorites_total: number;
+  reviews_total: number;
+}
+
+export interface GenreCount {
+  genre: string;
+  count: number;
+}
+
+export interface MonthActivity {
+  month: string;
+  count: number;
+}
+
+export interface UserStatistics {
+  summary: StatisticsSummary;
+  ratings_distribution: Record<string, number>;
+  top_genres: GenreCount[];
+  activity_by_month: MonthActivity[];
+}
