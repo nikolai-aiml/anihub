@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { SakuraPetals } from "../components/SakuraPetals";
+import { AmbientParticles } from "../components/AmbientParticles";
 import { useAuth } from "../contexts/AuthContext";
 import { HeroBackground } from "../components/HeroBackground";
 import { GlowButton } from "../components/GlowButton";
@@ -40,9 +42,15 @@ export function Home() {
       {/* Фон */}
       <HeroBackground />
 
+      {/* Лепестки сакуры */}
+      <SakuraPetals />
+
+      {/* Частицы */}
+      <AmbientParticles />
+
       {/* Контент */}
-      <div className="relative container mx-auto px-6 py-20 md:py-28">
-        {/* Заголовок */}
+      <div className="relative container mx-auto px-6 py-20 md:py-28" style={{ zIndex: 2 }}>
+            {/* Заголовок */}
         <motion.div
           className="text-center"
           initial={{ opacity: 0, y: 30, filter: "blur(12px)" }}
