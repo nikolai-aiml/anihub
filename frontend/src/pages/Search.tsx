@@ -7,6 +7,7 @@ import { AnimeGridSkeleton } from "../components/AnimeCardSkeleton";
 import { EmptyState } from "../components/EmptyState";
 import { ErrorState } from "../components/ErrorState";
 import { SearchIcon, CompassIcon } from "../components/icons";
+import { StaggerContainer, StaggerItem } from "../components/Stagger";
 
 export function Search() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -135,11 +136,13 @@ export function Search() {
             Найдено: <span className="text-white font-medium">{data.total}</span>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+          <StaggerContainer className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {data.items.map((anime) => (
-              <AnimeCard key={anime.id} anime={anime} />
+              <StaggerItem key={anime.id}>
+                <AnimeCard anime={anime} />
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
 
           {data.pages > 1 && (
             <div className="flex justify-center items-center gap-4 mt-8">

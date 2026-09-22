@@ -4,7 +4,7 @@ import { animeApi } from "../api/anime";
 import { AnimeCard } from "../components/AnimeCard";
 import { Loader } from "../components/Loader";
 import { AnimeGridSkeleton } from "../components/AnimeCardSkeleton";
-
+import { StaggerContainer, StaggerItem } from "../components/Stagger";
 export function Catalog() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
@@ -65,11 +65,13 @@ export function Catalog() {
 
       {data && data.items.length > 0 && (
         <>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {data.items.map((anime) => (
-              <AnimeCard key={anime.id} anime={anime} />
-            ))}
-          </div>
+            <StaggerContainer className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              {data.items.map((anime) => (
+                <StaggerItem key={anime.id}>
+                  <AnimeCard anime={anime} />
+                </StaggerItem>
+              ))}
+            </StaggerContainer>
 
           {data.pages > 1 && (
             <div className="flex justify-center items-center gap-4 mt-8">
