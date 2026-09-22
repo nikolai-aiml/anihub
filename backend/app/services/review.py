@@ -1,7 +1,9 @@
 from fastapi import HTTPException, status
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.review import Review
+from app.models.user import User
 from app.repositories.anime import AnimeRepository
 from app.repositories.review import ReviewRepository
 from app.schemas.review import ReviewRead
@@ -111,47 +113,58 @@ class ReviewService:
         await self.reviews.remove(review)
 
     async def like(self, user_id: int, review_id: int) -> dict:
-        review = await self.reviews.get_by_id(review_id)
-        if not review:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Отзыв не найден",
-            )
-        if review.user_id == user_id:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Нельзя лайкать свой отзыв", 
-            )
+        # Загружаем всё ДО commit
+            review = await self.reviews.get_by_id(review_id)
+            if not review:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="Отзыв не найден",
+                )
+            if review.user_id == user_id:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Нельзя лайкать свой отзыв",
+                )
 
-        existing = await self.reviews.get_like(user_id, review_id)
-        if existing:
-            raise HTTPException(
-                status_code=status.HTTP_409_CONFLICT,
-                detail="Вы уже лайкнули этот отзыв",
-            )
-        if review.user_id != user_id and review.user_id != current_user_id:
-            # Только для чужих отзывов
+            existing = await self.reviews.get_like(user_id, review_id)
+            if existing:
+                raise HTTPException(
+                    status_code=status.HTTP_409_CONFLICT,
+                    detail="Вы уже лайкнули этот отзыв",
+                )
+
+            # СОХРАНЯЕМ значения ДО commit
+            review_owner_id = review.user_id
+            review_anime_id = review.anime_id
+
+            # Получаем username лайкающего и title аниме ДО add_like
+            from sqlalchemy import select
             from app.models.user import User
-            from app.services.notification import NotificationService
 
-            # Получаем username того, кто лайкнул
             liker_result = await self.db.execute(
                 select(User).where(User.id == user_id)
             )
             liker = liker_result.scalar_one()
 
-            anime = await self.anime.get_by_id(review.anime_id)
+            anime = await self.anime.get_by_id(review_anime_id)
             anime_title = anime.title if anime else "аниме"
 
-            await NotificationService(self.db).notify_review_like(
-                review.user_id, liker.username, anime_title
-            )
+            # Добавляем лайк (commit внутри)
+            await self.reviews.add_like(user_id, review_id)
 
-        await self.reviews.add_like(user_id, review_id)
-        # Перезагружаем для получения актуального likes_count
-        updated = await self.reviews.get_by_id(review_id)
-        return {"is_liked": True, "likes_count": updated.likes_count}
+            # Создаём уведомление (try/except — чтобы не ломать лайк)
+            from app.services.notification import NotificationService
 
+            try:
+                await NotificationService(self.db).notify_review_like(
+                    review_owner_id, liker.username, anime_title
+                )
+            except Exception as e:
+                print(f"Notification error: {e}")
+
+            # Перезагружаем для актуального likes_count
+            updated = await self.reviews.get_by_id(review_id)
+            return {"is_liked": True, "likes_count": updated.likes_count}
     async def unlike(self, user_id: int, review_id: int) -> dict:
         review = await self.reviews.get_by_id(review_id)
         if not review:

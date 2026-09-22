@@ -201,3 +201,24 @@ export const RARITY_COLORS: Record<AchievementRarity, string> = {
   epic: "text-purple-400 border-purple-500/30 bg-purple-500/10",
   legendary: "text-yellow-400 border-yellow-500/30 bg-yellow-500/10",
 };
+// Notifications
+export type NotificationType =
+  | "achievement"
+  | "review_like"
+  | "library_add"
+  | "favorite_add"
+  | "system";
+
+export interface Notification {
+  id: number;
+  type: NotificationType;
+  title: string;
+  message: string;
+  link: string | null;
+  is_read: boolean;
+  created_at: string;
+}
+
+export interface UnreadCount {
+  count: number;
+}

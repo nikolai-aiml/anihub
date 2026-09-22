@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import { BellIcon, MenuIcon } from "./icons";
+import { MenuIcon } from "./icons";
+import { NotificationsDropdown } from "./NotificationsDropdown";
 
 interface NavbarProps {
   onMenuClick?: () => void;
@@ -44,14 +45,8 @@ export function Navbar({ onMenuClick }: NavbarProps) {
           {user ? (
             <>
               {/* Уведомления */}
-              <button
-                className="relative p-2 rounded-lg hover:bg-white/5 transition-colors text-gray-300 hover:text-white"
-                aria-label="Уведомления"
-              >
-                <BellIcon />
-                {/* Бейдж — заглушка */}
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-accent rounded-full animate-pulse" />
-              </button>
+                  
+          <NotificationsDropdown />
 
               {/* Профиль */}
               <Link
