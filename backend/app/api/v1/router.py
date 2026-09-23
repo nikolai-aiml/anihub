@@ -2,6 +2,7 @@ from fastapi import APIRouter
 
 from app.api.v1 import (
     achievements,
+    admin,
     anime,
     auth,
     favorites,
@@ -11,6 +12,7 @@ from app.api.v1 import (
     recommendations,
     reviews,
     statistics,
+    episodes,
     users,
 )
 
@@ -24,5 +26,7 @@ api_router.include_router(ratings.router)
 api_router.include_router(reviews.router)
 api_router.include_router(statistics.router)
 api_router.include_router(achievements.router)
-api_router.include_router(notifications.router) 
+api_router.include_router(notifications.router)
 api_router.include_router(recommendations.router)
+api_router.include_router(admin.router)
+api_router.include_router(episodes.router)

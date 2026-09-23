@@ -38,7 +38,7 @@ animehub/
 └── README.md
 
 
-username: testuser
+username: testuser12
 
 password: test12345
 
@@ -54,3 +54,7 @@ docker compose ps
 
 cd C:\animehub\frontend
 npm run dev -- --host
+
+
+
+Invoke-WebRequest -Uri "https://rutube.ru/video/b851fc359342403fdf2c7b20a9600f92/?r=plwd" -OutFile "test.mp4"

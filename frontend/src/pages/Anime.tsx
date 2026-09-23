@@ -14,6 +14,8 @@ import { reviewsApi } from "../api/reviews";
 import { ReviewCard } from "../components/ReviewCard";
 import { ReviewForm } from "../components/ReviewForm";
 import type { Review } from "../types";
+import { translateGenre } from "../types";
+import { useQuery } from "@tanstack/react-query";
 
 export function Anime() {
   const { id } = useParams<{ id: string }>();
@@ -29,6 +31,12 @@ export function Anime() {
     rate: handleRate,
     remove: handleRemoveRating,
 } = useRating(animeId);
+// Проверяем наличие эпизодов
+const { data: episodes = [] } = useQuery({
+  queryKey: ["episodes", animeId],
+  queryFn: () => animeApi.listEpisodes(animeId),
+  enabled: !isNaN(animeId),
+});
 
   // Отзывы
   const [reviewSort, setReviewSort] = useState<"new" | "popular">("new");
@@ -154,7 +162,7 @@ export function Anime() {
                 key={g.id}
                 className="bg-surface border border-border px-3 py-1 rounded-full text-sm"
               >
-                {g.name}
+                {translateGenre(g.slug)}
               </span>
             ))}
           </div>
@@ -275,26 +283,38 @@ export function Anime() {
           </div>
         </div>
           {/* Кнопки */}
-            <div className="flex flex-wrap gap-3 mt-8">
-              <button
-                onClick={handleFavoriteToggle}
-                disabled={addMutation.isPending || removeMutation.isPending}
-                className={`
-                  inline-flex items-center gap-2 px-5 py-3 rounded-xl font-medium
-                  transition-all duration-300
-                  ${
-                    isFavorite
-                      ? "bg-accent/20 border border-accent/50 text-accent hover:bg-accent/30"
-                      : "glass-button hover:bg-primary/25 hover:border-primary/50"
-                  }
-                `}
+          <div className="flex flex-wrap gap-3 mt-8">
+            {/* Кнопка "Смотреть" — только если есть эпизоды */}
+            {episodes.length > 0 && (
+              <Link
+                to={`/watch/${anime.id}/1`}
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-primary to-accent hover:from-primary-hover hover:to-pink-600 text-white font-semibold transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg shadow-primary/30"
               >
-                <HeartIcon className="w-5 h-5" filled={isFavorite} />
-                {isFavorite ? "В избранном" : "В избранное"}
-              </button>
+                ▶ Смотреть
+              </Link>
+            )}
 
-              <LibraryButton animeId={animeId} />
-            </div>
+            {/* В избранное */}
+            <button
+              onClick={handleFavoriteToggle}
+              disabled={addMutation.isPending || removeMutation.isPending}
+              className={`
+                inline-flex items-center gap-2 px-5 py-3 rounded-xl font-medium
+                transition-all duration-300
+                ${
+                  isFavorite
+                    ? "bg-accent/20 border border-accent/50 text-accent hover:bg-accent/30"
+                    : "glass-button hover:bg-primary/25 hover:border-primary/50"
+                }
+              `}
+            >
+              <HeartIcon className="w-5 h-5" filled={isFavorite} />
+              {isFavorite ? "В избранном" : "В избранное"}
+            </button>
+
+            {/* В библиотеку */}
+            <LibraryButton animeId={animeId} />
+          </div>
         </div>
       </div>
     </div>

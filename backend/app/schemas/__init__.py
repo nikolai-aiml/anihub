@@ -8,6 +8,8 @@ from app.schemas.library import (
 )
 from app.schemas.notification import NotificationRead, UnreadCount
 from app.schemas.recommendations import UserDashboard
+from app.schemas.admin import AdminAnimeRead, AdminStats, AdminUserRead
+from app.schemas.episode import EpisodeRead
 
 from app.schemas.statistics import (
     GenreCount,
@@ -35,6 +37,10 @@ from app.schemas.user import (
 )
 
 __all__ = [
+    "AdminAnimeRead",
+    "EpisodeRead",
+    "AdminStats",
+    "AdminUserRead",
     "PasswordChange",
     "AnimeListItem",
     "AnimeRead",

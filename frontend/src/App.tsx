@@ -21,6 +21,8 @@ import { Achievements } from "./pages/Achievements";
 import { Statistics } from "./pages/Statistics";
 import { Settings } from "./pages/Settings";
 import { NotFound } from "./pages/NotFound";
+import { Admin } from "./pages/Admin";
+import { Watch } from "./pages/Watch";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -40,6 +42,7 @@ function AppRoutes() {
           <Route path="/register" element={<Register />} />
           <Route path="/catalog" element={<Catalog />} />
           <Route path="/anime/:id" element={<Anime />} />
+          <Route path="/watch/:animeId/:episodeNumber" element={<Watch />} /> 
           <Route path="/search" element={<Search />} />
 
           <Route
@@ -63,6 +66,14 @@ function AppRoutes() {
             element={
               <ProtectedRoute>
                 <Favorites />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute>
+                <Admin />
               </ProtectedRoute>
             }
           />

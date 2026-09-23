@@ -5,6 +5,7 @@ export interface User {
   avatar_url: string | null;
   bio: string | null;
   is_active: boolean;
+  is_superuser: boolean; 
   created_at: string;
 }
 
@@ -254,4 +255,78 @@ export interface UserStatistics {
   ratings_distribution: Record<string, number>;
   top_genres: GenreCount[];
   activity_by_month: MonthActivity[];
+}
+// Переводы жанров
+export const GENRE_NAMES_RU: Record<string, string> = {
+  action: "Экшен",
+  adventure: "Приключения",
+  comedy: "Комедия",
+  drama: "Драма",
+  fantasy: "Фэнтези",
+  horror: "Ужасы",
+  mystery: "Мистика",
+  psychological: "Психологическое",
+  romance: "Романтика",
+  "sci-fi": "Фантастика",
+  "slice-of-life": "Повседневность",
+  sports: "Спорт",
+  supernatural: "Сверхъестественное",
+  thriller: "Триллер",
+  mecha: "Меха",
+  isekai: "Исекай",
+  music: "Музыка",
+  school: "Школа",
+  historical: "Историческое",
+  military: "Военное",
+  demons: "Демоны",
+  magic: "Магия",
+  seinen: "Сэйнэн",
+  shounen: "Сёнэн",
+  shoujo: "Сёдзё",
+};
+
+export function translateGenre(slug: string): string {
+  const key = slug.toLowerCase();
+  return GENRE_NAMES_RU[key] || slug;
+}
+// Admin
+export interface AdminStats {
+  users_total: number;
+  users_active: number;
+  anime_total: number;
+  reviews_total: number;
+  ratings_total: number;
+  favorites_total: number;
+  library_total: number;
+}
+
+export interface AdminUser {
+  id: number;
+  username: string;
+  email: string;
+  is_active: boolean;
+  is_superuser: boolean;
+  created_at: string;
+}
+
+export interface AdminAnime {
+  id: number;
+  title: string;
+  title_en: string | null;
+  year: number | null;
+  rating: number;
+  rating_count: number;
+  created_at: string;
+}
+// Episodes
+export interface Episode {
+  id: number;
+  anime_id: number;
+  number: number;
+  title: string | null;
+  description: string | null;
+  video_url: string;
+  thumbnail_url: string | null;
+  duration_seconds: number | null;
+  created_at: string;
 }

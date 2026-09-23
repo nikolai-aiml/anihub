@@ -1,4 +1,5 @@
 import type { GenreCount } from "../../types";
+import { translateGenre } from "../../types";
 
 interface TopGenresProps {
   genres: GenreCount[];
@@ -33,11 +34,12 @@ export function TopGenres({ genres }: TopGenresProps) {
             "from-red-500 to-rose-500",
           ];
           const color = colors[index % colors.length];
+          const displayName = translateGenre(genre.genre);
 
           return (
             <div key={genre.genre} className="flex items-center gap-3">
-              <div className="w-24 text-sm text-white font-medium truncate">
-                {genre.genre}
+              <div className="w-28 text-sm text-white font-medium truncate">
+                {displayName}
               </div>
 
               <div className="flex-1 h-7 bg-white/5 rounded-lg overflow-hidden">

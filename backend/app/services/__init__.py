@@ -9,6 +9,8 @@ from app.services.statistics import StatisticsService
 from app.services.user import UserService
 from app.services.notification import NotificationService
 from app.services.recommendations import RecommendationsService
+from app.services.admin import AdminService
+from app.services.episode import EpisodeService
 
 __all__ = [
     "AchievementService",
@@ -22,4 +24,6 @@ __all__ = [
     "UserService",
     "RecommendationsService",
     "NotificationService",
+    "AdminService",
+    "EpisodeService",
 ]

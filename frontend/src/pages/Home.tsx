@@ -1,18 +1,18 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "../contexts/AuthContext";
 import { useDashboard } from "../hooks/useDashboard";
+import { animeApi } from "../api/anime";
 import { HeroBackground } from "../components/HeroBackground";
 import { SakuraPetals } from "../components/SakuraPetals";
 import { AmbientParticles } from "../components/AmbientParticles";
 import { GlowButton } from "../components/GlowButton";
-import { TiltCard } from "../components/TiltCard";
 import { AnimeCarousel } from "../components/AnimeCarousel";
+import { SpotlightCarousel } from "../components/SpotlightCarousel";
 import { Loader } from "../components/Loader";
 import {
   BookIcon,
-  ChartIcon,
-  TrophyIcon,
   ArrowRightIcon,
   SparklesIcon,
 } from "../components/icons";
@@ -21,23 +21,10 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 
 // ============ ГОСТЬ ============
 function GuestHome() {
-  const features = [
-    {
-      icon: BookIcon,
-      title: "Каталог",
-      text: "Тысячи аниме с жанрами, рейтингами и описаниями",
-    },
-    {
-      icon: ChartIcon,
-      title: "Библиотека",
-      text: "Отслеживай прогресс, ставь оценки, веди статистику",
-    },
-    {
-      icon: TrophyIcon,
-      title: "Достижения",
-      text: "Получай награды за просмотр и активность",
-    },
-  ];
+  const { data: spotlight } = useQuery({
+    queryKey: ["spotlight"],
+    queryFn: () => animeApi.spotlight(),
+  });
 
   return (
     <div className="relative container mx-auto px-6 py-20 md:py-28" style={{ zIndex: 2 }}>
@@ -80,45 +67,35 @@ function GuestHome() {
         </Link>
       </motion.div>
 
-      <div className="grid md:grid-cols-3 gap-6 mt-24 max-w-5xl mx-auto">
-        {features.map((feature, index) => {
-          const Icon = feature.icon;
-          return (
-            <motion.div
-              key={feature.title}
-              initial={{ opacity: 0, y: 40, filter: "blur(10px)" }}
-              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-              transition={{
-                duration: 0.7,
-                delay: 0.7 + index * 0.15,
-                ease: EASE,
-              }}
-              whileHover={{ y: -8, scale: 1.02 }}
-            >
-              <TiltCard delay={0}>
-                <motion.div
-                  className="w-14 h-14 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-6 text-primary"
-                  whileHover={{ scale: 1.1, rotate: 5 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <Icon className="w-7 h-7" />
-                </motion.div>
+      {/* Карусели */}
+      <div className="mt-20 space-y-8 max-w-6xl mx-auto">
+        {spotlight?.top_month && spotlight.top_month.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.7, ease: EASE }}
+          >
+            <SpotlightCarousel
+              label="🔥 Топ 5 месяца"
+              subtitle="Лучшие аниме по рейтингу"
+              anime={spotlight.top_month}
+            />
+          </motion.div>
+        )}
 
-                <h3 className="text-2xl font-bold font-display mb-3 text-white">
-                  {feature.title}
-                </h3>
-                <p className="text-gray-400 leading-relaxed text-sm">
-                  {feature.text}
-                </p>
-
-                <div className="mt-6 flex items-center gap-2 text-primary text-sm font-medium opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:translate-x-1">
-                  Подробнее
-                  <ArrowRightIcon className="w-4 h-4" />
-                </div>
-              </TiltCard>
-            </motion.div>
-          );
-        })}
+        {spotlight?.new_season && spotlight.new_season.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.9, ease: EASE }}
+          >
+            <SpotlightCarousel
+              label="🆕 Новинки сезона"
+              subtitle="Лучшее за последние годы"
+              anime={spotlight.new_season}
+            />
+          </motion.div>
+        )}
       </div>
     </div>
   );
@@ -138,7 +115,6 @@ function UserDashboard() {
 
   return (
     <div className="relative container mx-auto px-6 py-8" style={{ zIndex: 2 }}>
-      {/* Приветствие */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -158,7 +134,6 @@ function UserDashboard() {
         </p>
       </motion.div>
 
-      {/* Продолжить */}
       {dashboard.continue_watching.length > 0 && (
         <AnimeCarousel
           title="📚 Продолжить"
@@ -168,7 +143,6 @@ function UserDashboard() {
         />
       )}
 
-      {/* Рекомендации */}
       {dashboard.recommendations.length > 0 && (
         <AnimeCarousel
           title="✨ Рекомендации для вас"
@@ -182,7 +156,6 @@ function UserDashboard() {
         />
       )}
 
-      {/* Популярное */}
       {dashboard.popular.length > 0 && (
         <AnimeCarousel
           title="🔥 Популярное"
@@ -192,7 +165,6 @@ function UserDashboard() {
         />
       )}
 
-      {/* Новые релизы */}
       {dashboard.new_releases.length > 0 && (
         <AnimeCarousel
           title="🆕 Новые релизы"
@@ -202,7 +174,6 @@ function UserDashboard() {
         />
       )}
 
-      {/* Если ничего нет */}
       {!hasData && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}

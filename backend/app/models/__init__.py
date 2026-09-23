@@ -5,6 +5,7 @@ from app.models.achievement import (
     UserAchievement,
 )
 from app.models.anime import Anime
+from app.models.episode import Episode
 from app.models.favorite import Favorite
 from app.models.genre import Genre
 from app.models.library import LibraryEntry, LibraryStatus
@@ -18,6 +19,7 @@ __all__ = [
     "AchievementCategory",
     "AchievementRarity",
     "Anime",
+    "Episode",
     "Favorite",
     "Genre",
     "LibraryEntry",

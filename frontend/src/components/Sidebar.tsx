@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 import {
   HomeIcon,
   CompassIcon,
@@ -8,6 +9,7 @@ import {
   ChartIcon,
   SettingsIcon,
   SearchIcon,
+  LockIcon,
 } from "./icons";
 
 interface SidebarProps {
@@ -15,18 +17,25 @@ interface SidebarProps {
   onClose: () => void;
 }
 
-const navItems = [
-  { to: "/", label: "Главная", icon: HomeIcon },
-  { to: "/catalog", label: "Каталог", icon: CompassIcon },
-  { to: "/search", label: "Поиск", icon: SearchIcon },
-  { to: "/library", label: "Библиотека", icon: BookIcon },
-  { to: "/favorites", label: "Избранное", icon: HeartIcon },
-  { to: "/achievements", label: "Достижения", icon: TrophyIcon },
-  { to: "/statistics", label: "Статистика", icon: ChartIcon },
-  { to: "/settings", label: "Настройки", icon: SettingsIcon },
-];
-
 export function Sidebar({ isOpen, onClose }: SidebarProps) {
+  const { user } = useAuth();
+
+  const navItems = [
+    { to: "/", label: "Главная", icon: HomeIcon },
+    { to: "/catalog", label: "Каталог", icon: CompassIcon },
+    { to: "/search", label: "Поиск", icon: SearchIcon },
+    { to: "/library", label: "Библиотека", icon: BookIcon },
+    { to: "/favorites", label: "Избранное", icon: HeartIcon },
+    { to: "/achievements", label: "Достижения", icon: TrophyIcon },
+    { to: "/statistics", label: "Статистика", icon: ChartIcon },
+    { to: "/settings", label: "Настройки", icon: SettingsIcon },
+  ];
+
+  // Добавляем админку только для суперпользователя
+  const items = user?.is_superuser
+    ? [...navItems, { to: "/admin", label: "Админ-панель", icon: LockIcon }]
+    : navItems;
+
   return (
     <>
       {/* Оверлей на мобильном */}
@@ -46,8 +55,8 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
         `}
       >
-        <nav className="p-4 space-y-1 overflow-y-auto h-full">
-          {navItems.map((item) => {
+        <nav className="p-4 space-y-1 overflow-y-auto h-full pb-20">
+          {items.map((item) => {
             const Icon = item.icon;
             return (
               <NavLink
@@ -71,10 +80,8 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         </nav>
 
         {/* Подвал sidebar */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-white/5">
-          <p className="text-xs text-muted text-center">
-            ANIHUB © 2026
-          </p>
+        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-white/5 glass-strong">
+          <p className="text-xs text-muted text-center">ANIHUB © 2026</p>
         </div>
       </aside>
     </>

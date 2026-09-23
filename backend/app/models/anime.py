@@ -21,6 +21,10 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.core.database import Base
 
 if TYPE_CHECKING:
+    from app.models.episode import Episode
+    from app.models.genre import Genre
+    from app.models.rating import Rating
+    from app.models.review import Review
     from app.models.genre import Genre
     from app.models.genre import Genre
     from app.models.rating import Rating
@@ -101,6 +105,11 @@ class Anime(Base):
     reviews: Mapped[list[Review]] = relationship(
         back_populates="anime",
         cascade="all, delete-orphan",
+    )
+    episodes: Mapped[list[Episode]] = relationship(
+        back_populates="anime",
+        cascade="all, delete-orphan",
+        order_by="Episode.number",
     )
 
     def __repr__(self) -> str:

@@ -36,7 +36,43 @@ async def list_anime(
         status=status,
         studio=studio,
     )
+@router.get("/spotlight")
+async def get_spotlight(db: DbSession) -> dict:
+    """Топ-5 месяца + Новинки сезона для главной страницы."""
+    from datetime import datetime
 
+    from sqlalchemy import desc, select
+    from sqlalchemy.orm import selectinload
+
+    from app.models.anime import Anime
+    from app.schemas.anime import AnimeListItem
+
+    # Топ-5 по рейтингу
+    top_result = await db.execute(
+        select(Anime)
+        .options(selectinload(Anime.genres))
+        .where(Anime.rating_count > 0)
+        .order_by(desc(Anime.rating), desc(Anime.rating_count))
+        .limit(5)
+    )
+    top_month = list(top_result.scalars().all())
+
+    # Новинки — последние 2 года
+    current_year = datetime.now().year
+
+    new_result = await db.execute(
+        select(Anime)
+        .options(selectinload(Anime.genres))
+        .where(Anime.year >= current_year - 2)
+        .order_by(desc(Anime.year), desc(Anime.rating))
+        .limit(5)
+    )
+    new_season = list(new_result.scalars().all())
+
+    return {
+        "top_month": [AnimeListItem.model_validate(a) for a in top_month],
+        "new_season": [AnimeListItem.model_validate(a) for a in new_season],
+    }
 
 @router.get("/{anime_id}", response_model=AnimeRead)
 async def get_anime(anime_id: int, db: DbSession) -> AnimeRead:
