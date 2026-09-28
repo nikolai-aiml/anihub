@@ -15,7 +15,6 @@ import { ReviewCard } from "../components/ReviewCard";
 import { ReviewForm } from "../components/ReviewForm";
 import type { Review } from "../types";
 import { translateGenre } from "../types";
-import { useQuery } from "@tanstack/react-query";
 
 export function Anime() {
   const { id } = useParams<{ id: string }>();
